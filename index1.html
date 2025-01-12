@@ -1,0 +1,220 @@
+
+<!DOCTYPE html>
+<html lang="ar">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>شبكة سبأ وحمير</title>
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            font-family: Arial, sans-serif;
+            background: url('11صوره11.jpg') no-repeat center center/cover;
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+
+        /* الشريط العلوي */
+        .top-bar {
+            background-color: #AA1A1A;
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: space-around;
+            padding: 10px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+        }
+        .top-bar button {
+            background: none;
+            border: none;
+            color: white;
+            font-size: 16px;
+            cursor: pointer;
+            font-weight: bold;
+            padding: 5px 10px;
+            display: flex;
+            align-items: center;
+        }
+        .top-bar button img {
+            width: 20px;
+            height: 20px;
+            margin-left: 5px;
+        }
+        .top-bar button:hover {
+            background-color: #F8C701;
+            border-radius: 5px;
+        }
+
+        /* النص المتحرك */
+        .marquee {
+            font-size: 16px;
+            color: white;
+            font-weight: bold;
+            background-color: #000;
+            padding: 10px 0;
+            overflow: hidden;
+            white-space: nowrap;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+            text-align: center;
+        }
+        .marquee span {
+            display: inline-block;
+            animation: marquee 15s linear infinite;
+        }
+        @keyframes marquee {
+    from { transform: translateX(-10%); }
+    to { transform: translateX(100%); }
+}
+
+        /* شريط المهام */
+        .task-bar {
+            background-color: rgba(255, 255, 255, 0.9);
+            display: flex;
+            flex-wrap: wrap;
+            align-items: center;
+            padding: 10px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+            gap: 10px;
+        }
+        .task-bar button {
+            background-color: white;
+            border: 1px solid #ccc;
+            padding: 10px 20px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-weight: bold;
+            transition: background-color 0.3s;
+        }
+        .task-bar button:hover {
+            background-color: #F8C701;
+        }
+
+        /* المحتوى */
+        .content {
+            flex: 1;
+            padding: 20px;
+            text-align: center;
+            background-color: #fff;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            overflow-y: auto;
+        }
+
+        /* شريط الصفحات المفتوحة */
+        .open-pages {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            background-color: #AA1A1A;
+            color: white;
+            padding: 5px 10px;
+            font-size: 14px;
+        }
+        .open-pages span {
+            font-weight: bold;
+        }
+    </style>
+</head>
+<body>
+    <!-- الشريط العلوي -->
+    <div class="top-bar">
+        <button onclick="showSection('requests')">الطلبات <img src="صوره1.jpg" alt="Icon"></button>
+        <button onclick="showSection('transfers')">الحوالات <img src="صوره2.jpg" alt="Icon"></button>
+        <button onclick="showSection('banking
+        )">التحويلات المصرفية <img src="صوره2.jpg" alt="Icon"></button>
+        <button onclick="showSection('wallets')">المحافظ الإلكترونية <img src="صوره4.jpg" alt="Icon"></button>
+        <button onclick="showSection('recharge')">شحن رصيد <img src="صوره5.jpg" alt="Icon"></button>
+        <button onclick="showSection('reports')">التقارير <img src="صوره6.jpg" alt="Icon"></button>
+        <button onclick="showSection('settings')">الإعدادات <img src="صوره7.jpg" alt="Icon"></button>
+    </div>
+
+    <!-- النص المتحرك -->
+    <div class="marquee">
+        <span>أهلًا وسهلًا بكم في شبكة سبأ وحِمْيَر  //تنبيه هام: صرف الحوالات يقتصر على المستلم شخصيًا مع إبراز الهوية الشخصية. تأكد من مطابقة البيانات قبل استلام الحوالة. شكرًا لتفهمكم| خدمات مالية متكاملة بأعلى جودة!</span>
+    </div>
+
+    <!-- شريط المهام -->
+    <div class="task-bar" id="taskBar">
+        <!-- يتم تحديث المهام ديناميكيًا -->
+    </div>
+
+    <!-- المحتوى -->
+    <div class="content" id="content">
+        <p>مرحبًا بك! اختر أي قسم من الشريط العلوي لعرض محتوياته هنا.</p>
+    </div>
+
+    <!-- شريط الصفحات المفتوحة -->
+    <div class="open-pages" id="openPages">
+        <span>شبكة سبأ وحِمْيَر</span>
+          <span>المستخدم:</span>
+    </div>
+
+    <script>
+        // دوال لعرض الأقسام
+        function showSection(section) {
+            const taskBar = document.getElementById('taskBar');
+            const content = document.getElementById('content');
+            taskBar.innerHTML = '';
+            if (section === 'requests') {
+                taskBar.innerHTML = `
+                    <button onclick="openPage('طلب سحب حوالة داخلية')">طلب سحب حوالة داخلية</button>
+                    <button onclick="openPage('طلب سحب حوالة خارجية')">طلب سحب حوالة خارجية</button>
+                    <button onclick="openPage('طلب بيع عملة')">طلب بيع عملة</button>
+                    <button onclick="openPage('طلب شراء عملة')">طلب شراء عملة</button>
+                    <button onclick="openPage('طلب تغطية')">طلب تغطية</button>
+                `;
+            } else if (section === 'transfers') {
+                taskBar.innerHTML = `
+                    <button onclick="openPage('إرسال ملاحظات')">إرسال ملاحظات</button>
+                    <button onclick="openPage('استيراد الحوالات')">استيراد الحوالات</button>
+                    <button onclick="openPage('البحث عن بطاقة مستلم')">البحث عن بطاقة مستلم</button>
+                    <button onclick="openPage('استلام الحوالات')">استلام الحوالات</button>
+                    <button onclick="openPage('إرسال الحوالات')">إرسال الحوالات</button>
+                `;
+            } else if (section === 'banking') {
+                taskBar.innerHTML = `
+                    <button onclick="openPage('إيداع نقدي')">إيداع نقدي</button>
+                    <button onclick="openPage('السريع')">السريع</button>
+                    <button onclick="openPage('يام موني')">يام موني</button>
+                    <button onclick="openPage('شفت صرف حوالة')">شفت صرف حوالة</button>
+                    <button onclick="openPage('البنك التجاري')">البنك التجاري</button>
+                    <button onclick="openPage('تضامن باي')">تضامن باي</button>
+                `;
+            } else if (section === 'wallets') {
+                taskBar.innerHTML = `
+                    <button onclick="openPage('جوالي سحب')">جوالي سحب</button>
+                    <button onclick="openPage('جوالي إيداع')">جوالي إيداع</button>
+                    <button onclick="openPage('ون كاش سحب')">ون كاش سحب</button>
+                    <button onclick="openPage('ون كاش إيداع')">ون كاش إيداع</button>
+                    <button onclick="openPage('موبايل موني إيداع')">موبايل موني إيداع</button>
+                    <button onclick="openPage('موبايل موني سحب')">موبايل موني سحب</button>
+                `;
+            } else if (section === 'recharge') {
+                taskBar.innerHTML = `<button onclick="openPage('شاشة شحن رصيد')">شاشة شحن رصيد</button>`;
+            } else if (section === 'reports') {
+                taskBar.innerHTML = `
+                    <button onclick="openPage('مزامنة الحوالات الصادرة')">مزامنة الحوالات الصادرة</button>
+                    <button onclick="openPage('مطابقة رصيد الوكلاء')">مطابقة رصيد الوكلاء</button>
+                    <button onclick="openPage('تصدير الحوالة إلى ملف')">تصدير الحوالة إلى ملف</button>
+                    <button onclick="openPage('تقارير الحوالات')">تقارير الحوالات</button>
+                    <button onclick="openPage('كشف حساب')">كشف حساب</button>
+                `;
+            } else if (section === 'settings') {
+                taskBar.innerHTML = `
+                    <button onclick="openPage('تحديث البيانات الأساسية')">تحديث البيانات الأساسية</button>
+                    <button onclick="openPage('تغيير كلمة المرور')">تغيير كلمة المرور</button>
+                    <button onclick="openPage('الإعدادات')">الإعدادات</button>
+                `;
+            }
+            content.innerHTML = `<p>تم عرض محتويات القسم: ${section}</p>`;
+        }
+
+        // فتح الصفحات داخل المحتوى
+        function openPage(pageName) {
+            const content = document.getElementById('content');
+            content.innerHTML = `<p>أنت الآن في الصفحة: ${pageName}</p>`;
+        }
+    </script>
+</body>
+</html>
