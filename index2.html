@@ -13,6 +13,11 @@
             background-color: #f8f8f8;
         }
 
+.buttons .refresh {
+    background: #28a745; 
+    color: white;
+} 
+
         .container {
             width: 90%;
             max-width: 1200px;
@@ -185,7 +190,7 @@
 
         <!-- خانة البحث -->
         <div class="search-section">
-            <input type="text" id="transaction-number" placeholder="أدخل رقم يبدا ب: 100)">
+            <input type="text" id="transaction-number" placeholder="أدخل رقم الحوالة يبدا ب: 100)">
             <button onclick="searchTransaction()">بحث</button>
         </div>
 
@@ -231,12 +236,14 @@
 
 <button class="exit" onclick="exitPage()">خروج</button>
 
+<button class="refresh" onclick="refreshData()">تحديث البيانات</button>
+
 <!-- أزرار التحكم -->
 <div class="buttons">
     <button class="edit">تعديل</button>
     <button class="delete">حذف</button>
     <button class="receive" onclick="markAsReceived()">استلام</button>
-    <button class="print">طباعة السند</button>
+   <button class="print" onclick="printReceipt()">طباعة السند</button>
     <button class="exit" onclick="exitPage()">خروج</button>
 </div>
 
@@ -361,8 +368,88 @@ function markAsReceived() {
     }
 }
 
+function printReceipt() {
+    const transactionNumber = document.getElementById("transaction-number").value;
+
+    if (transactions[transactionNumber]) {
+        const transaction = transactions[transactionNumber];
+
+        const receiptWindow = window.open('', '_blank');
+        receiptWindow.document.write(`
+            <html>
+            <head>
+                <title>سند الحوالة</title>
+                <style>
+                    body {
+                        font-family: Arial, sans-serif;
+                        text-align: center;
+                        direction: rtl;
+                        margin: 20px;
+                    }
+                    .header {
+                        font-size: 18px;
+                        font-weight: bold;
+                        margin-bottom: 20px;
+                    }
+                    .info {
+                        font-size: 16px;
+                        margin: 10px 0;
+                    }
+                    .footer {
+                        margin-top: 30px;
+                        font-size: 14px;
+                        color: gray;
+                    }
+                </style>
+            </head>
+            <body>
+                <div class="header">سحب الحوالة</div>
+                <div class="info">سبأ وحمير للصرافة</div>
+                <div class="info">رقم الحوالة: ${transactionNumber}</div>
+                <div class="info">اسم المرسل: ${transaction.senderName}</div>
+                <div class="info">رقم هاتف المرسل: ${transaction.senderPhone}</div>
+                <div class="info">اسم المستلم: ${transaction.receiverName}</div>
+                <div class="info">رقم هاتف المستلم: ${transaction.receiverPhone}</div>
+                <div class="info">المصدر: ${transaction.source}</div>
+                <div class="info">رقم السند: ${transaction.documentNumber}</div>
+                <div class="info">المبلغ: ${transaction.amount}</div>
+                <div class="info">العملة: ${transaction.currency}</div>
+                <div class="info">غرض التحويل: ${transaction.purpose}</div>
+                <div class="footer">شكراً لاستخدامكم خدماتنا!</div>
+            </body>
+            </html>
+        `);
+        receiptWindow.document.close();
+        receiptWindow.print();
+    } else {
+        showModal("رقم الحوالة غير موجود! تأكد من إدخال الرقم بشكل صحيح.");
+    }
+}
+
 function exitPage() {
     window.location.href = "index1.html"; // ضع هنا رابط الصفحة التي تريد العودة إليها
+}
+
+// وظيفة لتحديث البيانات
+function refreshData() {
+    const transactionNumber = document.getElementById("transaction-number").value;
+
+    if (transactions[transactionNumber]) {
+        const transaction = transactions[transactionNumber];
+        // تحديث البيانات في الحقول
+        document.getElementById("receiver-name").value = transaction.receiverName;
+        document.getElementById("receiver-phone").value = transaction.receiverPhone;
+        document.getElementById("sender-name").value = transaction.senderName;
+        document.getElementById("sender-phone").value = transaction.senderPhone;
+        document.getElementById("source").value = transaction.source;
+        document.getElementById("document-number").value = transaction.documentNumber;
+        document.getElementById("amount").value = transaction.amount;
+        document.getElementById("currency").value = transaction.currency;
+        document.getElementById("purpose").value = transaction.purpose;
+        showModal("تم تحديث البيانات بنجاح!");
+    } else {
+        showModal("رقم الحوالة غير موجود! تأكد من إدخال الرقم بشكل صحيح.");
+    }
 }
 
     </script>
