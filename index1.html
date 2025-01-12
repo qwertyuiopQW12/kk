@@ -215,6 +215,18 @@
             const content = document.getElementById('content');
             content.innerHTML = `<p>أنت الآن في الصفحة: ${pageName}</p>`;
         }
+        
+    // فتح الصفحات داخل المحتوى أو توجيه إلى صفحة أخرى
+    function openPage(pageName) {
+        if (pageName === 'استلام الحوالات') {
+            // توجيه المستخدم إلى index11.html في نفس النافذة
+            window.location.href = 'index11.html';
+        } else {
+            // عرض الصفحة داخل المحتوى
+            const content = document.getElementById('content');
+            content.innerHTML = `<p>أنت الآن في الصفحة: ${pageName}</p>`;
+        }
+    }
     </script>
 </body>
 </html>

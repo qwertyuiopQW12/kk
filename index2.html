@@ -1,0 +1,370 @@
+<!DOCTYPE html>
+<html lang="ar">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>واجهة سحب الحوالات</title>
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            font-family: Arial, sans-serif;
+            direction: rtl;
+            background-color: #f8f8f8;
+        }
+
+        .container {
+            width: 90%;
+            max-width: 1200px;
+            margin: 20px auto;
+            padding: 20px;
+            background: white;
+            border: 1px solid #ddd;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+
+        .header {
+            background-color: #9a0000;
+            color: white;
+            padding: 10px;
+            text-align: center;
+            font-size: 18px;
+            font-weight: bold;
+        }
+
+/* نافذة المودال */
+.modal {
+    display: none; /* الإخفاء الافتراضي */
+    position: fixed;
+    z-index: 1000;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.5); /* تظليل الخلفية */
+}
+
+/* محتوى المودال */
+.modal-content {
+    background-color: #fff;
+    margin: 15% auto;
+    padding: 20px;
+    border: 1px solid #ccc;
+    width: 80%;
+    max-width: 400px;
+    border-radius: 10px;
+    text-align: center;
+    box-shadow: 0px 4px 15px rgba(0, 0, 0, 0.2);
+    animation: fadeIn 0.3s;
+}
+
+/* زر الإغلاق */
+.close-btn {
+    color: #9a0000;
+    float: right;
+    font-size: 20px;
+    font-weight: bold;
+    cursor: pointer;
+}
+
+/* نص الرسالة */
+#modal-message {
+    font-size: 16px;
+    font-weight: bold;
+    color: #555;
+}
+
+/* تأثير الدخول */
+@keyframes fadeIn {
+    from { opacity: 0; transform: scale(0.9); }
+    to { opacity: 1; transform: scale(1); }
+}
+
+        .search-section {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+
+        .search-section input {
+            flex: 1;
+            padding: 10px;
+            margin-right: 10px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+        }
+
+        .search-section button {
+            padding: 10px 15px;
+            border: none;
+            background-color: #007bff;
+            color: white;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+
+        .form-section {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+
+        .form-section .form-group {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .form-group label {
+            font-size: 14px;
+            font-weight: bold;
+            margin-bottom: 5px;
+        }
+
+        .form-group input {
+            padding: 8px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+        }
+
+        .buttons {
+            text-align: center;
+            margin: 20px 0;
+        }
+
+        .buttons button {
+            margin: 5px;
+            padding: 10px 15px;
+            border: none;
+            border-radius: 4px;
+            font-size: 14px;
+            cursor: pointer;
+        }
+
+        .buttons .edit { background: #007bff; color: white; }
+        .buttons .delete { background: #dc3545; color: white; }
+        .buttons .receive { background: #28a745; color: white; }
+        .buttons .print { background: #6c757d; color: white; }
+        .buttons .exit { background: #ffc107; color: white; }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+        }
+
+        table th, table td {
+            border: 1px solid #ddd;
+            padding: 8px;
+            text-align: center;
+        }
+
+        table th {
+            background-color: #9a0000;
+            color: white;
+        }
+
+        table tr:nth-child(even) {
+            background-color: #f9f9f9;
+        }
+
+        table tr:hover {
+            background-color: #f1f1f1;
+        }
+
+        .received-row {
+            background-color: #d4edda !important;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- Header -->
+        <div class="header">سحب الحوالات</div>
+
+        <!-- خانة البحث -->
+        <div class="search-section">
+            <input type="text" id="transaction-number" placeholder="أدخل رقم يبدا ب: 100)">
+            <button onclick="searchTransaction()">بحث</button>
+        </div>
+
+        <!-- بيانات الحوالة -->
+        <div class="form-section">
+            <div class="form-group">
+                <label for="receiver-name">اسم المستلم</label>
+                <input type="text" id="receiver-name" disabled>
+            </div>
+            <div class="form-group">
+                <label for="receiver-phone">رقم الهاتف</label>
+                <input type="text" id="receiver-phone" disabled>
+            </div>
+            <div class="form-group">
+                <label for="sender-name">اسم المرسل</label>
+                <input type="text" id="sender-name" disabled>
+            </div>
+            <div class="form-group">
+                <label for="sender-phone">رقم الهاتف</label>
+                <input type="text" id="sender-phone" disabled>
+            </div>
+            <div class="form-group">
+                <label for="source">المصدر</label>
+                <input type="text" id="source" disabled>
+            </div>
+            <div class="form-group">
+                <label for="document-number">رقم السند</label>
+                <input type="text" id="document-number" disabled>
+            </div>
+            <div class="form-group">
+                <label for="amount">المبلغ</label>
+                <input type="number" id="amount" disabled>
+            </div>
+            <div class="form-group">
+                <label for="currency">العملة</label>
+                <input type="text" id="currency" disabled>
+            </div>
+            <div class="form-group">
+                <label for="purpose">غرض التحويل</label>
+                <input type="text" id="purpose" disabled>
+            </div>
+        </div>
+
+<button class="exit" onclick="exitPage()">خروج</button>
+
+<!-- أزرار التحكم -->
+<div class="buttons">
+    <button class="edit">تعديل</button>
+    <button class="delete">حذف</button>
+    <button class="receive" onclick="markAsReceived()">استلام</button>
+    <button class="print">طباعة السند</button>
+    <button class="exit" onclick="exitPage()">خروج</button>
+</div>
+
+        <!-- جدول التقارير -->
+        <table>
+            <thead>
+                <tr>
+                    <th>رقم الحوالة</th>
+                    <th>اسم المرسل</th>
+                    <th>اسم المستلم</th>
+                    <th>المبلغ</th>
+                    <th>العملة</th>
+                    <th>الحالة</th>
+                </tr>
+            </thead>
+            <tbody id="transaction-table">
+                <!-- بيانات افتراضية -->
+                <tr>
+                    <td>123456</td>
+                    <td>أحمد</td>
+                    <td>محمد</td>
+                    <td>500</td>
+                    <td>دولار</td>
+                    <td>تم السحب</td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+
+<div id="custom-modal" class="modal">
+    <div class="modal-content">
+        <span class="close-btn" onclick="closeModal()">&times;</span>
+        <p id="modal-message"></p>
+    </div>
+</div>
+
+    <script>
+        const transactions = {
+            "1009106665": {
+                receiverName: "اسماعيل علي عبدالله الرقب",
+                receiverPhone: "779106662",
+                senderName: "مجدي امين غالب المرقب ",
+                senderPhone: "779106664",
+                source: "صنعاء",
+                documentNumber: "1",
+                amount: "500",
+                currency: "دولار",
+                purpose: "دفع فواتير"
+            }
+        };
+
+        // عرض المودال
+function showModal(message) {
+    const modal = document.getElementById("custom-modal");
+    const modalMessage = document.getElementById("modal-message");
+
+    modalMessage.textContent = message;
+    modal.style.display = "block"; // إظهار النافذة
+}
+
+// إغلاق المودال
+function closeModal() {
+    const modal = document.getElementById("custom-modal");
+    modal.style.display = "none"; // إخفاء النافذة
+}
+
+// تطبيق التعديلات في البحث
+function searchTransaction() {
+    const transactionNumber = document.getElementById("transaction-number").value;
+
+    if (transactions[transactionNumber]) {
+        const transaction = transactions[transactionNumber];
+        document.getElementById("receiver-name").value = transaction.receiverName;
+        document.getElementById("receiver-phone").value = transaction.receiverPhone;
+        document.getElementById("sender-name").value = transaction.senderName;
+        document.getElementById("sender-phone").value = transaction.senderPhone;
+        document.getElementById("source").value = transaction.source;
+        document.getElementById("document-number").value = transaction.documentNumber;
+        document.getElementById("amount").value = transaction.amount;
+        document.getElementById("currency").value = transaction.currency;
+        document.getElementById("purpose").value = transaction.purpose;
+    } else {
+        showModal("رقم الحوالة غير صحيح! تأكد من إدخال رقم الحوالة بشكل صحيح.");
+    }
+}
+
+function exitPage() {
+    window.location.href = "index1.html"; // استبدل بـ الرابط المناسب
+}
+
+function markAsReceived() {
+    const transactionNumber = document.getElementById("transaction-number").value;
+
+    if (transactions[transactionNumber]) {
+        const table = document.getElementById("transaction-table");
+        const transaction = transactions[transactionNumber];
+
+        // التحقق إذا كانت الحوالة مسجلة مسبقًا
+        const rows = Array.from(table.rows);
+        const isAlreadyReceived = rows.some(row => row.cells[0].textContent === transactionNumber);
+
+        if (isAlreadyReceived) {
+            showModal("تم صرف الحوالة مسبقًا!");
+        } else {
+            const newRow = document.createElement("tr");
+            newRow.classList.add("received-row");
+
+            newRow.innerHTML = `
+                <td>${transactionNumber}</td>
+                <td>${transaction.senderName}</td>
+                <td>${transaction.receiverName}</td>
+                <td>${transaction.amount}</td>
+                <td>${transaction.currency}</td>
+                <td>تم السحب</td>
+            `;
+
+            table.appendChild(newRow);
+            showModal("تم استلام الحوالة بنجاح!");
+        }
+    } else {
+        showModal("رقم الحوالة غير موجود! تأكد من إدخال الرقم بشكل صحيح.");
+    }
+}
+
+function exitPage() {
+    window.location.href = "index1.html"; // ضع هنا رابط الصفحة التي تريد العودة إليها
+}
+
+    </script>
+</body>
+</html>
